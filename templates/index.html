@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Daily Calorie Calculator</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
 </head>
 <body>
-    <h1>The Daily Calorie Calculator</h1>
+    <h1>Daily<br>Calorie Calculator</h1>
     <p>
         Lets calculate how many calories your body needs today!
     </p>
-    <h1>My Form</h1>
+    <h2>My Form</h2>
     <form method="POST" action="{{ url_for('myform') }}">
         {{ form.csrf_token }}   <!-- flask built in security measure -->
         {{ form.name.label }} {{ form.name() }}<br>
