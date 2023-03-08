@@ -1,0 +1,42 @@
+Title: Calorie calculator
+
+Planning (CB version):
+
+- single route
+- form from wtform
+- basic, avoid OOP for v1
+
+
+
+Description:
+
+A web app that estimates a users calorie needs for the current day.
+
+The app accepts the following inputs from the user:
+
+- user weight
+- user height
+- user age
+
+Temperature is also considered in the calories calculation.
+
+The app accepts these additional inputs:
+
+- user location
+- user city
+
+The app scrapes the days temperature.
+
+It then calculates the day's calorie requirement.
+
+OBJECTS:
+    Calorie:
+        weight
+        height
+        age
+        temperature
+        calculate()
+    Temperature:
+        country
+        city
+        get()

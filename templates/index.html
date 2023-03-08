@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Daily Calorie Calculator</title>
+</head>
+<body>
+    <h1>The Daily Calorie Calculator</h1>
+    <p>
+        Lets calculate how many calories your body needs today!
+    </p>
+    <h1>My Form</h1>
+    <form method="POST" action="{{ url_for('myform') }}">
+        {{ form.csrf_token }}   <!-- flask built in security measure -->
+        {{ form.name.label }} {{ form.name() }}<br>
+        {{ form.weight.label }} {{ form.weight() }}<br>
+        {{ form.height.label }} {{ form.height() }}<br>
+        {{ form.age.label }} {{ form.age() }}<br>
+        {{ form.country.label }} {{ form.country() }}<br>
+        {{ form.city.label }} {{ form.city() }}<br>
+        {{ form.submit() }}
+    </form>
+    {% if name and weight %}
+    <p>
+        Hello, {{ name }}! You're age is {{ age }}!<br>
+        And your city is {{city}}!<br>
+        And if you ran a test method, the result would be:<br>
+        {{ method_check }}<br>
+        And if you multipled weight by height as a calculated field, the result would be:<br>
+        {{calc_field}}
+    </p>
+    {% endif %}
+
+</body>
+</html>
+
