@@ -20,14 +20,10 @@
         {{ form.city.label }} {{ form.city() }}<br>
         {{ form.submit() }}
     </form>
-    {% if name and weight %}
+    {% if calories %} <!-- field not present in form, does form instantiate with None types. Confused. -->
     <p>
-        Hello, {{ name }}! You're age is {{ age }}!<br>
-        And your city is {{city}}!<br>
-        And if you ran a test method, the result would be:<br>
-        {{ method_check }}<br>
-        And if you multipled weight by height as a calculated field, the result would be:<br>
-        {{calc_field}}
+       Thanks {{name}}! <br>
+       Eat an estimated {{calories}} calories today!
     </p>
     {% endif %}
 

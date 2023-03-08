@@ -1,5 +1,5 @@
-from flask import Flask, request, render_template
-from my_classes import MyForm, UserEstimate, Temperature
+from flask import Flask, render_template
+from my_classes import MyForm, User, Location
 
 
 app = Flask(__name__)
@@ -12,19 +12,26 @@ def myform():
     form = MyForm()
 
     if form.validate_on_submit():
+
+        # assign intermediate variables for own understanding later
         user_name = form.name.data
-        user_weight = form.weight.data
-        user_height = form.height.data
-        user_age = form.age.data
+        user_weight = float(form.weight.data)
+        user_height = float(form.height.data)
+        user_age = float(form.age.data)
         user_country = form.country.data
         user_city = form.city.data
-        calculated_field = float(user_weight) * float(user_height)
-        my_user = UserEstimate(user_weight, user_height, user_age, temperature=10)
-        user_method_check = my_user.test_method()
-        return render_template('index.html', form=form, name=user_name, weight=user_weight,
-                               age=user_age, country=user_country,
-                               city=user_city, method_check=user_method_check,
-                               calc_field=calculated_field)
+
+        # instantiate a location object based on user input
+        user_location = Location(user_country, user_city)
+        # scrape temp with get_temp method
+        user_temp = user_location.get_temp()
+
+        # instantiate a user
+        my_user = User(user_weight, user_height, user_age, user_temp)
+        #
+        user_calorie_estimate = my_user.calculate_estimate_instructor_formula()
+
+        return render_template('index.html', form=form, name=user_name, calories=user_calorie_estimate)
 
     return render_template('index.html', form=form)
 

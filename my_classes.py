@@ -4,18 +4,20 @@ from requests import get
 from selectorlib import Extractor
 
 class MyForm(FlaskForm):
+    """Represent a form for accepting user inputs required for calculating users daily
+     calorie usage"""
+
     name = StringField('Name')
-    weight = StringField('Weight')
-    height = StringField('Height')
+    weight = StringField('Weight (in kg)')
+    height = StringField('Height (in cm)')
     age = StringField('Age')
     country = StringField('Country')
     city = StringField('City')
     submit = SubmitField('Submit')
 
 
-class Calorie:
-    """Represent amount of calories calculated with
-    BMR = 10*weight + 6.25*height - 5*age + 5 - 10*temperature"""
+class User:
+    """Represent a user for calculating daily calorie usage"""
 
     def __init__(self, weight, height, age, temperature):
         self.weight = weight
@@ -23,19 +25,28 @@ class Calorie:
         self.age = age
         self.temperature = temperature
 
-    def calculate(self):
-        pass
+    def calculate_estimate_instructor_formula(self):
+        return 10 * self.weight + 6.25 * self.height - 5 * self.age + 5 - 10 * self.temperature
 
+    # TODO: implement a second, more scientifically respected method
+    # Harris–Benedict equation
+    # Add male or female ask
+    # Remove temperature from calculation - perhaps add a weather related comment
+    # Harris–Benedict equations revised by Mifflin and St Jeor in 1990:
+    # Men	BMR = (10 × weight in kg) + (6.25 × height in cm) - (5 × age in years) + 5
+    # Women	BMR = (10 × weight in kg) + (6.25 × height in cm) - (5 × age in years) - 161
 
-class Temperature:
+class Location:
     """
-    Represent a temperature value extracted from the timeanddate.com/weather webpage.
+    Represent a user location for extracting a temperature value from the
+    timeanddate.com/weather webpage.
     """
 
     def __init__(self, country, city):
         self.country = country
         self.city = city
 
+    # scrape temperature
     def get_temp(self):
         my_headers = {
             'pragma': 'no-cache',
@@ -48,27 +59,19 @@ class Temperature:
         }
 
         my_url = f'https://www.timeanddate.com/weather/{self.country}/{self.city}'
+
+        # uses a selectorlib method
+        # TODO: consolidate to function to use one scraping library
         my_extractor = Extractor.from_yaml_file('temperature.yaml')
+
+        # TODO: add some error handling
+        # confusion with 'uk' or 'england'
+        # on website, london is uk. milton keynes and bristol england/uk.
+        # bristol works with uk
+        # but milton keynes works with england (or did it)
 
         r = get(my_url, headers=my_headers)
         my_html = r.text
         temp_html = my_extractor.extract(my_html)
-        stripped_temp = temp_html['temp'].replace('\xa0°C', '')
-        return stripped_temp
-
-
-class UserEstimate:
-    """Represent amount of calories calculated with
-    BMR = 10*weight + 6.25*height - 5*age + 5 - 10*temperature"""
-
-    def __init__(self, weight, height, age, temperature):
-        self.weight = weight
-        self.height = height
-        self.age = age
-        self.temperature = temperature
-
-    def test_method(self):
-        return f'User height is {self.height} and user weight is {self.weight}'
-
-    def calculate_estimate(self):
-        return 10 * self.weight + 6.25 * self.height - 5 * self.age + 5 - 10 * self.temperature
+        stripped_temp = str(temp_html['temp']).replace('\xa0°C', '')
+        return float(stripped_temp)
